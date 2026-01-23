@@ -1,0 +1,26 @@
+
+{
+  "manifest_version": 3,
+  "name": "PhishShield Pro: AI Scam Guard",
+  "version": "1.0.0",
+  "description": "Real-time AI-powered phishing and scam detection with explainable education.",
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "activeTab",
+    "geolocation"
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Open PhishShield Pro"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}

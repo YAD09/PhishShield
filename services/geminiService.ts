@@ -2,7 +2,9 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AnalysisResult, HelpCenter } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Initialize Gemini API with the API key from environment variables exclusively
+// DO NOT use || fallback as per guidelines
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const ANALYSIS_SCHEMA = {
   type: Type.OBJECT,
@@ -48,6 +50,7 @@ const ANALYSIS_SCHEMA = {
 };
 
 export async function analyzeContent(content: string, type: 'text' | 'url'): Promise<AnalysisResult> {
+  // Use gemini-3-flash-preview for general text tasks
   const model = 'gemini-3-flash-preview';
   const prompt = type === 'url' ? `Analyze this URL: ${content}` : `Analyze this text: ${content}`;
   try {
@@ -60,6 +63,7 @@ export async function analyzeContent(content: string, type: 'text' | 'url'): Pro
         responseSchema: ANALYSIS_SCHEMA,
       },
     });
+    // response.text is a property, not a method
     return JSON.parse(response.text);
   } catch (error) {
     throw new Error("Analysis failed.");
@@ -67,6 +71,7 @@ export async function analyzeContent(content: string, type: 'text' | 'url'): Pro
 }
 
 export async function findNearbyHelp(lat: number, lng: number): Promise<HelpCenter[]> {
+  // Use gemini-2.5-flash for Maps grounding as per guidelines
   const model = 'gemini-2.5-flash';
   try {
     const response = await ai.models.generateContent({
@@ -92,6 +97,7 @@ export async function findNearbyHelp(lat: number, lng: number): Promise<HelpCent
           centers.push({
             name: chunk.maps.title || "Cyber Cell",
             address: "Local Cyber Police Station",
+            // Include Maps URI from grounding chunks
             mapUri: chunk.maps.uri || `https://www.google.com/maps/search/cyber+crime+cell/@${lat},${lng},15z`,
           });
         }
